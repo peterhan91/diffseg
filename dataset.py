@@ -9,6 +9,8 @@ from torchvision import transforms
 from torchvision.datasets import CIFAR10, LSUNClass
 import torch
 import pandas as pd
+import numpy as np
+import random
 
 import torchvision.transforms.functional as Ftrans
 
@@ -714,6 +716,41 @@ class Repeat(Dataset):
     def __getitem__(self, index):
         index = index % self.original_len
         return self.dataset[index]
+
+
+class liverDataset(Dataset):
+    def __init__(self, path, csv_file, fold='train', transform=None):
+        super().__init__()
+        self.path = path
+        self.transform = transform
+        self.df = pd.read_csv(csv_file)
+        self.df = self.df[self.df['fold'] == fold]
+        self.files = self.df['file'].tolist()
+        self.fold = fold
+    
+    def __len__(self):
+        return len(self.files) * 155
+    
+    def __getitem__(self, idx):
+        npz = np.load(os.path.join(self.path, self.files[idx // 155]))
+        slice_idx = random.randint(0, npz.get('data').shape[1]-1)
+        img = torch.tensor(npz['data'][0, slice_idx][None, ...])
+        label = torch.tensor(npz['seg'][0, slice_idx][None, ...])
+        label = torch.clamp(label, max=1.0) # merge tumor classes into one
+        if self.fold == 'test': 
+            # in the testing phase, we only need the image and its index
+            if self.transform:
+                img = self.transform(img)
+            
+            return {'img': img, 'index': idx}
+        else:
+            if self.transform:
+                state = torch.get_rng_state()
+                img = self.transform(img)
+                torch.set_rng_state(state)
+                label = self.transform(label)
+            
+            return {'img': img, 'index': idx, 'labels': label}
 
 
 class msdataset3D(torch.utils.data.Dataset):
