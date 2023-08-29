@@ -304,7 +304,7 @@ def pretrain_bedroom128():
 def liver_autoenc():
     conf = ffhq128_autoenc_base()
     conf.data_name = 'liver'
-    conf.scale_up_gpus(1)
+    conf.scale_up_gpus(3)
     conf.img_size = 256
     conf.net_ch = 128
     conf.net_ch_mult = (1, 1, 2, 2, 4, 4)
@@ -312,7 +312,9 @@ def liver_autoenc():
     conf.eval_every_samples = 10_000_000
     conf.eval_ema_every_samples = 10_000_000
     conf.total_samples = 200_000_000
-    conf.batch_size = 4
+    conf.batch_size = 12
     conf.make_model_conf()
     conf.name = 'liver_autoenc'
+    conf.seed = None
+    conf.num_workers = 64
     return conf

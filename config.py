@@ -40,7 +40,7 @@ data_paths = {
     'celeba_relight':
     os.path.expanduser('datasets/celeba_hq_light/celeba_light.txt'),
     'liver':
-    os.path.expanduser('../nnunet/nnUNet_preprocessed/Dataset003_Liver/nnUNetPlans_2d/'),
+    '/home/than/DeepLearning/nnunet/nnUNet_preprocessed/Dataset003_Liver/nnUNetPlans_2d/',
 }
 
 
@@ -304,7 +304,7 @@ class TrainConfig(BaseConfig):
                               crop_d2c=True,
                               **kwargs)
         elif self.data_name == 'liver':
-            return liverDataset(path=path,
+            return liverDataset(path=data_paths['liver'],
                                 csv_file='liver_split.csv',
                                 fold='train', 
                                 transform=transforms.Compose([
