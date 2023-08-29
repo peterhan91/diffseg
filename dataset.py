@@ -752,4 +752,4 @@ class liverDataset(Dataset):
             img = img.repeat(3, 1, 1)
             label = label.repeat(3, 1, 1)
             
-            return {'img': torch.cat((label, img), dim=1), 'index': idx}
+            return {'img': torch.cat((label, img), dim=0), 'index': idx}
