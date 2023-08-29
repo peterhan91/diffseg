@@ -362,9 +362,9 @@ class LitModel(pl.LightningModule):
                     cond = (cond - self.conds_mean.to(
                         self.device)) / self.conds_std.to(self.device)
             else:
-                imgs, idxs = batch['img'], batch['index']
+                imgs, idxs, label = batch['img'], batch['index'], batch['labels']
                 # print(f'(rank {self.global_rank}) batch size:', len(imgs))
-                x_start = imgs
+                x_start = label
 
             if self.conf.train_mode == TrainMode.diffusion:
                 """
@@ -374,6 +374,7 @@ class LitModel(pl.LightningModule):
                 t, weight = self.T_sampler.sample(len(x_start), x_start.device)
                 losses = self.sampler.training_losses(model=self.model,
                                                       x_start=x_start,
+                                                      cond_img=imgs,
                                                       t=t)
             elif self.conf.train_mode.is_latent_diffusion():
                 """

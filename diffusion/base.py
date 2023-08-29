@@ -101,6 +101,7 @@ class GaussianDiffusionBeatGans:
                         model: Model,
                         x_start: th.Tensor,
                         t: th.Tensor,
+                        cond_img=None,
                         model_kwargs=None,
                         noise: th.Tensor = None):
         """
@@ -130,9 +131,10 @@ class GaussianDiffusionBeatGans:
         ]:
             with autocast(self.conf.fp16):
                 # x_t is static wrt. to the diffusion process
-                model_forward = model.forward(x=x_t.detach(),
+                model_forward = model.forward(x=th.cat((x_t.detach(), cond_img.detach()), dim=1),
                                               t=self._scale_timesteps(t),
                                               x_start=x_start.detach(),
+                                              cond=cond_img.detach(),
                                               **model_kwargs)
             model_output = model_forward.pred
 

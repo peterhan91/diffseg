@@ -151,7 +151,7 @@ class BeatGANsAutoencModel(BeatGANsUNetModel):
             tmp = self.encode(x_start)
             cond = tmp['cond']
         else: 
-            if cond.shape == x.shape:
+            if cond.shape == x_start.shape:
                 tmp = self.encode(cond)
                 cond = tmp['cond']
 
