@@ -312,7 +312,7 @@ def liver_autoenc():
     conf.eval_every_samples = 10_000_000
     conf.eval_ema_every_samples = 10_000_000
     conf.total_samples = 200_000_000
-    conf.batch_size = 12
+    conf.batch_size = 36
     conf.make_model_conf()
     conf.name = 'liver_autoenc'
     conf.seed = None
