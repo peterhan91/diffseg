@@ -115,6 +115,10 @@ class GaussianDiffusionBeatGans:
         :return: a dict with the key "loss" containing a tensor of shape [N].
                  Some mean or variance settings may also have other keys.
         """
+        seg = x_start.chunk(2, dim=1)[0]
+        img = x_start.chunk(2, dim=1)[1]
+        x_start = seg
+
         if model_kwargs is None:
             model_kwargs = {}
         if noise is None:
@@ -130,7 +134,7 @@ class GaussianDiffusionBeatGans:
         ]:
             with autocast(self.conf.fp16):
                 # x_t is static wrt. to the diffusion process
-                model_forward = model.forward(x=x_t.detach(),
+                model_forward = model.forward(x=th.cat((x_t.detach(), img.detach()), dim=1),
                                               t=self._scale_timesteps(t),
                                               x_start=x_start.detach(),
                                               **model_kwargs)

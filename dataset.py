@@ -750,7 +750,7 @@ class liverDataset(Dataset):
                 torch.set_rng_state(state)
                 label = self.transform(label)
             
-            return {'img': img, 'index': idx, 'labels': label}
+            return {'img': torch.cat((label, img), dim=1), 'index': idx}
 
 
 class msdataset3D(torch.utils.data.Dataset):

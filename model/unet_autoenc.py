@@ -119,7 +119,7 @@ class BeatGANsAutoencModel(BeatGANsUNetModel):
             return S
 
     def forward(self,
-                x,
+                x, # shape (n, 6, 256, 256)
                 t,
                 y=None,
                 x_start=None,
@@ -148,12 +148,9 @@ class BeatGANsAutoencModel(BeatGANsUNetModel):
             if x is not None:
                 assert len(x) == len(x_start), f'{len(x)} != {len(x_start)}'
 
-            tmp = self.encode(x_start)
+            cond_img = x.chunk(2, dim=1)[-1] # get the CT from input x_t
+            tmp = self.encode(cond_img)
             cond = tmp['cond']
-        else: 
-            if cond.shape == x.shape:
-                tmp = self.encode(cond)
-                cond = tmp['cond']
 
         if t is not None:
             _t_emb = timestep_embedding(t, self.conf.model_channels)
