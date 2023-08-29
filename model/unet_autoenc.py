@@ -37,7 +37,7 @@ class BeatGANsAutoencModel(BeatGANsUNetModel):
 
         self.encoder = BeatGANsEncoderConfig(
             image_size=conf.image_size,
-            in_channels=conf.in_channels,
+            in_channels=3,
             model_channels=conf.model_channels,
             out_hid_channels=conf.enc_out_channels,
             out_channels=conf.enc_out_channels,
@@ -150,6 +150,10 @@ class BeatGANsAutoencModel(BeatGANsUNetModel):
 
             tmp = self.encode(x_start)
             cond = tmp['cond']
+        else: 
+            if cond.shape == x.shape:
+                tmp = self.encode(cond)
+                cond = tmp['cond']
 
         if t is not None:
             _t_emb = timestep_embedding(t, self.conf.model_channels)

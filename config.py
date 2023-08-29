@@ -401,7 +401,7 @@ class TrainConfig(BaseConfig):
                 enc_grad_checkpoint=self.net_enc_grad_checkpoint,
                 enc_attn_resolutions=self.net_enc_attn,
                 image_size=self.img_size,
-                in_channels=3,
+                in_channels=6, # concate the image and the seg
                 model_channels=self.net_ch,
                 num_classes=None,
                 num_head_channels=-1,
