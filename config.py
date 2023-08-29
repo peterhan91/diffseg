@@ -39,6 +39,8 @@ data_paths = {
         'datasets/celeba_anno/CelebAMask-HQ-attribute-anno.txt'),
     'celeba_relight':
     os.path.expanduser('datasets/celeba_hq_light/celeba_light.txt'),
+    'liver':
+    os.path.expanduser('../nnunet/nnUNet_preprocessed/Dataset003_Liver/nnUNetPlans_2d/'),
 }
 
 
@@ -301,6 +303,20 @@ class TrainConfig(BaseConfig):
                               original_resolution=None,
                               crop_d2c=True,
                               **kwargs)
+        elif self.data_name == 'liver':
+            return liverDataset(path=path,
+                                csv_file='liver_split.csv',
+                                fold='train', 
+                                transform=transforms.Compose([
+                                        transforms.Resize(320, 
+                                        interpolation=transforms.InterpolationMode.NEAREST_EXACT,
+                                        antialias=True),
+                                        transforms.RandomCrop(256),
+                                        transforms.RandomHorizontalFlip(),
+                                        transforms.Lambda(lambda x: torch.flip(x, [1])),
+                                        # transforms.Lambda(lambda x: x.repeat(3, 1, 1) ),
+                                ])
+                                )
         else:
             raise NotImplementedError()
 
