@@ -427,7 +427,7 @@ class LitModel(pl.LightningModule):
                 imgs = None
             else:
                 imgs = batch['img']
-            self.log_sample(x_start=imgs)
+            # self.log_sample(x_start=imgs)
             self.evaluate_scores()
 
     def on_before_optimizer_step(self, optimizer: Optimizer,
@@ -585,7 +585,8 @@ class LitModel(pl.LightningModule):
                                  val_data=self.val_data,
                                  latent_sampler=self.eval_latent_sampler,
                                  conds_mean=self.conds_mean,
-                                 conds_std=self.conds_std)
+                                 conds_std=self.conds_std,
+                                 remove_cache=False)
             if self.global_rank == 0:
                 self.logger.experiment.add_scalar(f'FID{postfix}', score,
                                                   self.num_samples)
